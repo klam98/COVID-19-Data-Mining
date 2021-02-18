@@ -1,10 +1,25 @@
 import pandas as pd
 import numpy as np
 
-from helper1 import clean_age
+from helper1 import clean_age, impute
 
-test = pd.read_csv("data/cases_test.csv")
 train = pd.read_csv("data/cases_train.csv")
+test = pd.read_csv("data/cases_test.csv")
+
+
+#prints rows in test data with any missing values in meaningful columns
+#--NEEDS TO BE IMPUTED(?)--
+train_missing = train.iloc[:, :7]
+train_missing = train_missing[pd.isna(train_missing).any(1)]
+# print(train_missing)
+
+train_processed = clean_age(train)
+train_processed = impute(train_processed)
+print(train_processed)
+#training data's ages have been fully cleaned
+
+
+
 
 #prints rows in test data with any missing values in meaningful columns
 #--NEEDS TO BE IMPUTED(?)--
@@ -29,15 +44,3 @@ b = pd.to_numeric(test_processed["age"], errors='coerce').isna()
 test_non_numeric2 = test_processed[b]
 # print(test_non_numeric2)
 # print(test_processed)
-
-
-
-#prints rows in test data with any missing values in meaningful columns
-#--NEEDS TO BE IMPUTED(?)--
-train_missing = train.iloc[:, :7]
-train_missing = train_missing[pd.isna(train_missing).any(1)]
-# print(train_missing)
-
-train_processed = clean_age(train)
-#training data's ages have been fully cleaned
-

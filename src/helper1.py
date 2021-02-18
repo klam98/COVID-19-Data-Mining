@@ -1,6 +1,13 @@
 import pandas as pd
 import numpy as np
 
+def impute(dataset):
+	dataset['age'] = pd.to_numeric(dataset['age'],errors='coerce')
+	mean = dataset.mean()
+	dataset = dataset.fillna(mean)
+	dataset['age'] = pd.to_numeric(dataset['age'],errors='coerce')
+	return dataset
+
 def clean_age(dataset):
 	#STILL MISSING DOB TO AGE PROCESSING
 	processed = dataset.replace("0-1", "1", regex=True)
@@ -92,4 +99,5 @@ def clean_age(dataset):
 
 	processed = processed.replace("8 month", "1", regex=False)
 	processed = processed.replace("5 month", "0", regex=False)
+
 	return processed
