@@ -2,10 +2,34 @@ import pandas as pd
 import numpy as np
 
 def impute(dataset):
-	dataset['age'] = pd.to_numeric(dataset['age'],errors='coerce')
-	mean = dataset.mean()
-	dataset = dataset.fillna(mean)
-	dataset['age'] = pd.to_numeric(dataset['age'],errors='coerce')
+	#impute age column with mean age
+	dataset["age"] = pd.to_numeric(dataset['age'],errors='coerce', downcast='signed')
+	mean = dataset['age'].mean()
+	dataset['age'].fillna(mean, inplace=True)
+	dataset = dataset.astype({"age": int})
+
+	#impute sex column with "Unknown"
+	dataset['sex'].fillna("Unknown", inplace=True)
+
+	#impute province column with "Unknown"
+	dataset['province'].fillna("Unknown", inplace=True)
+
+	#impute country column with "Unknown", and fill in rows with Taiwan as a province with China as its country
+	dataset['country'].fillna("Unknown", inplace=True)
+	dataset['country'] = np.where(dataset['province'] == "Taiwan", "China", dataset['country'])
+
+	#impute confirmation date column with "Unknown"
+	dataset['date_confirmation'].fillna("Unknown", inplace=True)
+
+	#impute latitude and longitude columns with "Unknown"
+	dataset['latitude'].fillna("Unknown", inplace=True)
+	dataset['longitude'].fillna("Unknown", inplace=True)
+
+	#impute additional information column with "None"
+	dataset['additional_information'].fillna("None", inplace=True)
+
+	#impute source column with "Unknown"
+	dataset['source'].fillna("Unknown", inplace=True)
 	return dataset
 
 def clean_age(dataset):
