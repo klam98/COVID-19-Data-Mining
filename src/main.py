@@ -3,21 +3,23 @@ import numpy as np
 
 from helper1 import clean_age, impute
 
+# disable chained assignments
+pd.options.mode.chained_assignment = None 
+
+
 train = pd.read_csv("data/cases_train.csv")
 test = pd.read_csv("data/cases_test.csv")
 
+train_processed  = pd.read_csv("results/cases_train_processed.csv")
 
-#prints rows in test data with any missing values in meaningful columns
-#--NEEDS TO BE IMPUTED(?)--
-train_missing = train.iloc[:, :7]
-train_missing = train_missing[pd.isna(train_missing).any(1)]
-# print(train_missing)
+# train_processed = clean_age(train)
+# training data's ages have been fully cleaned
 
-train_processed = clean_age(train)
-train_processed = impute(train_processed)
-print(train_processed)
-#training data's ages have been fully cleaned
+# train_processed = impute(train_processed)
+# train data has been fully imputed
 
+# cleaned training data has been written to "results/cases_train_processed.csv"
+# train_processed.to_csv("results/cases_train_processed.csv", index=False)
 
 
 
