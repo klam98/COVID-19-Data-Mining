@@ -21,9 +21,11 @@ def impute(dataset):
 	#impute confirmation date column with "Unknown"
 	dataset['date_confirmation'].fillna("Unknown", inplace=True)
 
-	#impute latitude and longitude columns with "Unknown"
+	#impute latitude and longitude columns with "Unknown", and ensure type is float
 	dataset['latitude'].fillna("Unknown", inplace=True)
 	dataset['longitude'].fillna("Unknown", inplace=True)
+	dataset = dataset.astype({"latitude": float})
+	dataset = dataset.astype({"longitude": float})
 
 	#impute additional information column with "None"
 	dataset['additional_information'].fillna("None", inplace=True)
@@ -41,6 +43,7 @@ def clean_age(dataset):
 	processed = processed.replace("0-10", "5", regex=True)
 	processed = processed.replace("0-18", "9", regex=True)
 	processed = processed.replace("0-19", "10", regex=True)
+	processed = processed.replace("0-20", "10", regex=True)
 	processed = processed.replace("0-60", "30", regex=True)
 
 	processed = processed.replace("5-9", "7", regex=True)
@@ -70,6 +73,7 @@ def clean_age(dataset):
 	processed = processed.replace("20-70", "45", regex=True)
 	processed = processed.replace("21-61", "41", regex=True)
 	processed = processed.replace("22-60", "41", regex=True)
+	processed = processed.replace("22-23", "23", regex=True)
 	processed = processed.replace("23-84", "54", regex=True)
 	processed = processed.replace("25-29", "27", regex=True)
 	processed = processed.replace("27-29", "28", regex=True)
@@ -87,6 +91,7 @@ def clean_age(dataset):
 
 	processed = processed.replace("40-49", "45", regex=True)
 	processed = processed.replace("40-50", "45", regex=True)
+	processed = processed.replace("41-60", "51", regex=True)
 	processed = processed.replace("45-49", "47", regex=True)
 
 	processed = processed.replace("50-54", "52", regex=True)
@@ -121,7 +126,8 @@ def clean_age(dataset):
 	processed = processed.replace("85+", "85", regex=False)
 	processed = processed.replace("90+", "90", regex=False)
 
-	processed = processed.replace("8 month", "1", regex=False)
 	processed = processed.replace("5 month", "0", regex=False)
+	processed = processed.replace("8 month", "1", regex=False)
+	processed = processed.replace("11 month", "1", regex=False)
 
 	return processed
