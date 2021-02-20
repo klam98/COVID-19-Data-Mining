@@ -2,13 +2,14 @@ import pandas as pd
 import numpy as np
 
 from helper1 import clean_age, impute
+from helper2 import transform
 
 # disable chained assignments
 pd.options.mode.chained_assignment = None 
 
-
-# train = pd.read_csv("data/cases_train.csv")
-# test = pd.read_csv("data/cases_test.csv")
+train = pd.read_csv("data/cases_train.csv")
+test = pd.read_csv("data/cases_test.csv")
+location = pd.read_csv("data/location.csv")
 
 train_processed  = pd.read_csv("results/cases_train_processed.csv")
 test_processed  = pd.read_csv("results/cases_test_processed.csv")
@@ -32,3 +33,6 @@ test_processed  = pd.read_csv("results/cases_test_processed.csv")
 
 # cleaned test data has been written to "results/cases_test_processed.csv"
 # test_processed.to_csv("results/cases_test_processed.csv", index=False)
+
+
+transform(location)
