@@ -20,4 +20,4 @@ def transform(dataset):
 				case_fatality += county["Case-Fatality_Ratio"]
 		transformed = transformed.append(pd.DataFrame({"Province_State":state, "Country_Region":"US", "Last_Update":"WIP", "Lat":0.0, "Long_":0.0, "Confirmed": confirmed, "Deaths": deaths, "Recovered": recovered,\
 		 "Active": active, "Combined_Key": combined, "Incidence_Rate": incidence_rate, "Case-Fatality_Ratio": case_fatality}), ignore_index=True)
-	print(transformed)
+	return transformed

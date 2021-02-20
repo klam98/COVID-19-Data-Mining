@@ -14,6 +14,8 @@ location = pd.read_csv("data/location.csv")
 train_processed  = pd.read_csv("results/cases_train_processed.csv")
 test_processed  = pd.read_csv("results/cases_test_processed.csv")
 
+location_processed = transform(location)
+# location_processed.to_csv("results/location_processed.csv", index=False)
 # training data's ages have been fully cleaned
 # train_processed = clean_age(train)
 
@@ -33,6 +35,3 @@ test_processed  = pd.read_csv("results/cases_test_processed.csv")
 
 # cleaned test data has been written to "results/cases_test_processed.csv"
 # test_processed.to_csv("results/cases_test_processed.csv", index=False)
-
-
-transform(location)
