@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 from helper1 import clean_age, impute
-from helper2 import transform
+from helper2 import transform, transform2
 
 # disable chained assignments
 pd.options.mode.chained_assignment = None 
@@ -14,8 +14,13 @@ location = pd.read_csv("data/location.csv")
 train_processed  = pd.read_csv("results/cases_train_processed.csv")
 test_processed  = pd.read_csv("results/cases_test_processed.csv")
 
-location_processed = transform(location)
-location_processed.to_csv("results/location_processed.csv", index=False)
+location_transformed = transform(location)
+location_transformed.to_csv("results/location_transformed.csv", index=False)
+
+# extra transformation on location only for EDA purposes
+location_transformed2 = transform2(location)
+location_transformed2.to_csv("results/location_transformed2.csv", index=False)
+
 # training data's ages have been fully cleaned
 # train_processed = clean_age(train)
 

@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 
+# Preprocessing task 1.4
 def transform(dataset):
 	united_states = dataset[dataset["Country_Region"] == "US"]
 	united_states["Incidence_Rate"].fillna(0, inplace = True)
@@ -31,5 +32,39 @@ def transform(dataset):
 		 "Active": active, "Combined_Key": (state + ", US"), "Incidence_Rate": incidence_rate, "Case-Fatality_Ratio": case_fatality}), ignore_index=True)
 
 	recovered_index = transformed[transformed["Province_State"] == "Recovered"].index
+	transformed.drop(recovered_index, inplace = True)
+	return transformed
+
+
+# Additional function for aggregating location dataset by each country
+def transform2(dataset):
+	unique_countries = pd.DataFrame(dataset['Country_Region'].unique()).values
+	transformed = pd.DataFrame(columns = ['Country_Region','Confirmed','Deaths','Recovered','Active','Incidence_Rate','Case-Fatality_Ratio'])
+
+	for country in unique_countries:
+		confirmed = deaths = recovered = active = incidence_rate = count = 0
+		for i in range(dataset.shape[0]):
+			region = dataset.iloc[i]
+			if region["Country_Region"] == country:
+				count += 1
+				confirmed += region["Confirmed"]
+				deaths += region["Deaths"]
+				recovered += region["Confirmed"] - region["Active"] - region["Deaths"]
+				active += region["Active"]
+				incidence_rate += region["Incidence_Rate"]
+
+		incidence_rate /= count
+		case_fatality = deaths / confirmed * 100
+		transformed = transformed.append(pd.DataFrame({
+        	"Country_Region": country, 
+        	"Confirmed": confirmed, 
+        	"Deaths": deaths, 
+        	"Recovered": recovered,
+        	"Active": active, 
+        	"Incidence_Rate": incidence_rate, 
+        	"Case-Fatality_Ratio": case_fatality
+    	}), ignore_index=True)
+
+	recovered_index = transformed[transformed["Country_Region"] == "Recovered"].index
 	transformed.drop(recovered_index, inplace = True)
 	return transformed
