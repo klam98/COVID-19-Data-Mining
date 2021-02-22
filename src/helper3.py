@@ -17,7 +17,7 @@ def join_province(dataset_cases, dataset_loc):
 	joined['Incidence_Rate'] = joined['Incidence_Rate'].apply(lambda x: x / 1000)
 
 	# joined.drop(columns = ["Country_Region", "Confirmed", "Deaths", "Active", "Recovered", "Combined_Key", "Last_Update"], inplace = True)
-	joined.drop(columns = ["Province_State", "Country_Region", "Lat", "Long_", "Confirmed", "Deaths", "Active", "Recovered", "Combined_Key", "Last_Update"], inplace = True)
+	joined.drop(columns = ["Province_State", "Country_Region", "Lat", "Long_", "Confirmed", "Deaths", "Active", "Recovered", "Combined_Key"], inplace = True)
 
 	# joined.rename(columns={"Incidence_Rate": "Country_Incidence_Percentage", "Case-Fatality_Ratio": "Country_Case-Fatality_Ratio"}, inplace = True)
 	joined.rename(columns={"Incidence_Rate": "Province_Incidence_Percentage", "Case-Fatality_Ratio": "Province_Case-Fatality_Ratio"}, inplace = True)

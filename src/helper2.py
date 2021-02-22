@@ -8,6 +8,7 @@ def transform_us(dataset):
 	united_states["Incidence_Rate"].fillna(0, inplace = True)
 	states = pd.DataFrame(united_states["Province_State"].unique()).values
 	transformed  = pd.DataFrame(columns = dataset.columns)
+	transformed.drop(columns = "Last_Update", inplace = True)
 	for state in states:
 		latitude = longitude = confirmed = deaths = recovered = active = incidence_rate = count = 0
 		for i in range(united_states.shape[0]):
@@ -32,6 +33,7 @@ def transform_us(dataset):
 		 "Active": active, "Combined_Key": (state + ", US"), "Incidence_Rate": incidence_rate, "Case-Fatality_Ratio": case_fatality}), ignore_index=True)
 
 	recovered_index = transformed[transformed["Province_State"] == "Recovered"].index
+	
 	transformed.drop(recovered_index, inplace = True)
 	return transformed
 
