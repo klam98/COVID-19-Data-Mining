@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 # Preprocessing task 1.4
-def transform(dataset):
+def transform_us(dataset):
 	united_states = dataset[dataset["Country_Region"] == "US"]
 	united_states["Incidence_Rate"].fillna(0, inplace = True)
 	states = pd.DataFrame(united_states["Province_State"].unique()).values
@@ -28,7 +28,7 @@ def transform(dataset):
 		case_fatality = deaths/confirmed*100
 		latitude /= count
 		longitude /= count
-		transformed = transformed.append(pd.DataFrame({"Province_State": state, "Country_Region": "US", "Last_Update": "WIP", "Lat": latitude, "Long_": longitude, "Confirmed": confirmed, "Deaths": deaths, "Recovered": recovered,\
+		transformed = transformed.append(pd.DataFrame({"Province_State": state, "Country_Region": "United States", "Lat": latitude, "Long_": longitude, "Confirmed": confirmed, "Deaths": deaths, "Recovered": recovered,\
 		 "Active": active, "Combined_Key": (state + ", US"), "Incidence_Rate": incidence_rate, "Case-Fatality_Ratio": case_fatality}), ignore_index=True)
 
 	recovered_index = transformed[transformed["Province_State"] == "Recovered"].index
@@ -37,14 +37,15 @@ def transform(dataset):
 
 
 # Additional function for aggregating location dataset by each country
-def transform2(dataset):
+def transform_countries(dataset):
 	unique_countries = pd.DataFrame(dataset['Country_Region'].unique()).values
-	transformed = pd.DataFrame(columns = ['Country_Region','Confirmed','Deaths','Recovered','Active','Incidence_Rate','Case-Fatality_Ratio'])
-
+	transformed = pd.DataFrame(columns = ['Country_Region','Confirmed','Deaths','Recovered','Active','Incidence_Rate','Case-Fatality_Ratio']) 
+	temp = dataset
+	temp["Incidence_Rate"] = dataset["Incidence_Rate"].fillna(0)
 	for country in unique_countries:
 		confirmed = deaths = recovered = active = incidence_rate = count = 0
-		for i in range(dataset.shape[0]):
-			region = dataset.iloc[i]
+		for i in range(temp.shape[0]):
+			region = temp.iloc[i]
 			if region["Country_Region"] == country:
 				count += 1
 				confirmed += region["Confirmed"]

@@ -2,11 +2,9 @@ import pandas as pd
 import numpy as np
 
 def impute(dataset):
-	#impute age column with mean age
+	#impute age column with "Unknown"
 	dataset["age"] = pd.to_numeric(dataset['age'],errors='coerce', downcast='signed')
-	mean = dataset['age'].mean()
-	dataset['age'].fillna(mean, inplace=True)
-	dataset = dataset.astype({"age": int})
+	dataset['age'].fillna("Unknown", inplace=True)
 
 	#impute sex column with "Unknown"
 	dataset['sex'].fillna("Unknown", inplace=True)
