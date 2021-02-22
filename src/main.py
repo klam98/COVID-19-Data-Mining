@@ -16,37 +16,39 @@ location = pd.read_csv("data/location.csv")
 # test_processed  = pd.read_csv("results/cases_test_processed.csv")
 # location_transformed = pd.read_csv("results/location_transformed.csv")
 
-location_transformed = transform_us(location)
-location_transformed.to_csv("results/location_transformed.csv", index=False)
-
-# extra transformation on location only for EDA purposes
-countries_transformed = transform_countries(location)
 # countries_transformed.to_csv("results/location_transformed2.csv", index=False)
 
-
+print("Training Data Proccessing Start")
 # training data's ages have been fully cleaned
 train_processed = clean_age(train)
-
 # train data has been fully imputed
 train_processed = impute(train_processed)
 
 # cleaned training data has been written to "results/cases_train_processed.csv"
 train_processed.to_csv("results/cases_train_processed.csv", index=False)
+print("Training Data Proccessing Finished\n")
 
-
-
+print("Test Data Proccessing Start")
 # test data's ages have been fully cleaned
 test_processed = clean_age(test)
-
 # test data has been fully imputed
 test_processed = impute(test_processed)
-
 # cleaned test data has been written to "results/cases_test_processed.csv"
 test_processed.to_csv("results/cases_test_processed.csv", index=False)
+print("Test Data Proccessing Finished\n")
 
+print("Locations Transform Start")
+location_transformed = transform_us(location)
+location_transformed.to_csv("results/location_transformed.csv", index=False)
+print("Locations Transform Finished\n")
+# extra transformation on location only for EDA purposes
+print("Locations Transform Start")
+countries_transformed = transform_countries(location)
+print("Locations Transform Finished\n")
 
+print("CSV Join Start")
 train_joined = join(train_processed, join_helper(location), countries_transformed)
 train_joined.to_csv("results/cases_train_joined.csv", index=False)
-
 test_joined = join(test_processed, join_helper(location), countries_transformed)
 test_joined.to_csv("results/cases_test_joined.csv", index=False)
+print("CSV Join Finished")
