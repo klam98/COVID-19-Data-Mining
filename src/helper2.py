@@ -71,3 +71,13 @@ def transform_countries(dataset):
 	recovered_index = transformed[transformed["Country_Region"] == "Recovered"].index
 	transformed.drop(recovered_index, inplace = True)
 	return transformed
+
+def remove_location_anomalies(dataset):
+	index = dataset[(dataset.Province_State == 'Puerto Rico')&( dataset.Combined_Key == "Unassigned, Puerto Rico, US")].index
+	processed = dataset.drop(index)
+	index = processed[(processed.Province_State == 'Louisiana')&( processed.Combined_Key == "Unassigned, Louisiana, US")].index
+	processed = processed.drop(index)
+	index = processed[(processed.Province_State == 'Arizona')&( processed.Combined_Key == "Unassigned, Arizona, US")].index
+	processed = processed.drop(index)
+
+	return processed

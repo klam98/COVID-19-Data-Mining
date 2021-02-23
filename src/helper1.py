@@ -129,3 +129,41 @@ def clean_age(dataset):
 	processed = processed.replace("11 month", "1", regex=False)
 
 	return processed
+
+def clean_submitted(dataset):
+	processed = dataset.replace("10.03.2020 - 12.03.2020", "11.03.2020", regex=False)
+	processed = processed.replace("10.03.2020-13.03.2020", "11.03.2020", regex=False)
+	processed = processed.replace("12.03.2020 - 13.03.2020", "12.03.2020", regex=False)
+	processed = processed.replace("25.02.2020 - 03.03.2020", "29.02.2020", regex=False)
+	processed = processed.replace("07.03.2020 - 13.03.2020", "10.03.2020", regex=False)
+	processed = processed.replace("07.03.2020 - 09.03.2020", "08.03.2020", regex=False)
+	processed = processed.replace("18.03.2020-19.03.2020", "18.03.2020", regex=False)
+	processed = processed.replace("07.03.2020 - 10.03.2020", "08.03.2020", regex=False)
+	processed = processed.replace("05.03.2020-06.03.2020", "05.03.2020", regex=False)
+	processed = processed.replace("10.03.2020 - 11.03.2020", "10.03.2020", regex=False)
+	processed = processed.replace("25.02.2020 - 26.02.2020", "25.02.2020", regex=False)
+	processed = processed.replace("12.03.2020-14.03.2020", "13.03.2020", regex=False)
+	processed = processed.replace("07.03.2020-09.03.2020", "08.03.2020", regex=False)
+	
+	return processed
+
+def remove_data_anomalies(dataset):
+	index = dataset[(dataset.age == "0") & (dataset.province == "Lima")].index
+	processed = dataset.drop(index)
+	index = processed[(processed.age == "1") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "100") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "101") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "102") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "103") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "104") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "105") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	index = processed[(processed.age == "106") & (processed.province == "Lima")].index
+	processed = processed.drop(index)
+	return processed
