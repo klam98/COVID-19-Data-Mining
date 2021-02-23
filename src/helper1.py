@@ -148,22 +148,23 @@ def clean_submitted(dataset):
 	return processed
 
 def remove_data_anomalies(dataset):
-	index = dataset[(dataset.age == "0") & (dataset.province == "Lima")].index
+	index = dataset[(dataset.age == 0) & (dataset.province == "Lima")].index
 	processed = dataset.drop(index)
-	index = processed[(processed.age == "1") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 1) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "100") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 100) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "101") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 101) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "102") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 102) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "103") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 103) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "104") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 104) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "105") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 105) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
-	index = processed[(processed.age == "106") & (processed.province == "Lima")].index
+	index = processed[(processed.age == 106) & (processed.province == "Lima")].index
 	processed = processed.drop(index)
+
 	return processed
