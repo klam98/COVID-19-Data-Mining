@@ -24,7 +24,7 @@ def xgboost_model(x_train, x_test, y_train, y_test):
 
 	accuracy = accuracy_score(y_test, y_predict)
 	print(accuracy)
-	with open("models/XGBClassifier.pkl", "wb") as file:
+	with open("models/xgb_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 
 xgboost_model(x_train, x_test, y_train, y_test)

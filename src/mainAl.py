@@ -6,7 +6,7 @@ from sklearn import neighbors
 from sklearn.preprocessing import LabelEncoder
 import pickle
 
-data = pd.read_csv("../data/cases_train_processed.csv")
+data = pd.read_csv("data/cases_train_processed.csv")
 
 encoder = LabelEncoder()
 data = data.apply(encoder.fit_transform)
@@ -24,7 +24,7 @@ def knn_model(x_train, x_test, y_train, y_test):
 
 	accuracy = accuracy_score(y_test, y_predict)
 	print(accuracy) #0.887077237155495
-	with open("../models/KNNClassifier.pkl", "wb") as file:
+	with open("models/knn_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 
 knn_model(x_train, x_test, y_train, y_test)
