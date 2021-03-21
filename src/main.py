@@ -17,13 +17,12 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, rand
 
 def xgboost_model(x_train, x_test, y_train, y_test):
 	model = xgboost.XGBClassifier()
-	model.fit(x_train,y_train)
+	model.fit(x_train, y_train.values.ravel())
 
 	y_predict = model.predict(x_test)
-	y_predict = [round(value) for value in y_predict]
 
 	accuracy = accuracy_score(y_test, y_predict)
-	print(accuracy)
+	print('XGBoost accuracy:', accuracy)
 	with open("models/xgb_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 

@@ -18,7 +18,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, rand
 def randomforests_model(x_train, x_test, y_train, y_test):
 	# define and train the model
     model = RandomForestClassifier(n_estimators=25)
-    model.fit(x_train, y_train)
+    model.fit(x_train, y_train.values.ravel())
 
     # prediction on test set using the model
     y_predict = model.predict(x_test)

@@ -17,13 +17,12 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, rand
 
 def knn_model(x_train, x_test, y_train, y_test):
 	model = neighbors.KNeighborsClassifier(100, weights='distance')
-	model.fit(x_train,y_train)
+	model.fit(x_train, y_train.values.ravel())
 
 	y_predict = model.predict(x_test)
-	y_predict = [round(value) for value in y_predict]
 
 	accuracy = accuracy_score(y_test, y_predict)
-	print(accuracy) #0.887077237155495
+	print('K-Nearest Neighbours accuracy:', accuracy) #0.887077237155495
 	with open("models/knn_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 
