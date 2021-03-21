@@ -39,9 +39,9 @@ def randomforests_model(x_train, y_train):
 	    pickle.dump(model, file)
     return model
 
-def accuracy(model, x_test, y_test):
-	y_predict = model.predict(x_test)
-	accuracy = accuracy_score(y_test, y_predict)
+def accuracy(model, x, y):
+	y_predict = model.predict(x)
+	accuracy = accuracy_score(y, y_predict)
 	return accuracy
 
 # xgboost_model(x_train, y_train)
@@ -52,6 +52,10 @@ loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
 loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
 loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
-print("XGBoost Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
-print("K-Nearest Neighbours Accuracy: ", accuracy(loaded_knn, x_test, y_test))
-print("Random Forests Accuracy: ", accuracy(loaded_rf, x_test, y_test))
+print("XGBoost Training  Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
+print("K-Nearest Neighbours Training  Accuracy: ", accuracy(loaded_knn, x_train, y_train))
+print("Random Forests Training  Accuracy: ", accuracy(loaded_rf, x_train, y_train))
+
+print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
+print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
+print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
