@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
 import xgboost
+import pickle
 
 data = pd.read_csv("data/cases_train_processed.csv")
 
@@ -23,5 +24,7 @@ def xgboost_model(x_train, x_test, y_train, y_test):
 
 	accuracy = accuracy_score(y_test, y_predict)
 	print(accuracy)
+	with open("models/XGBClassifier.pkl", "wb") as file:
+		pickle.dump(model, file)
 
 xgboost_model(x_train, x_test, y_train, y_test)
