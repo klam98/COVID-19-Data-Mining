@@ -4,7 +4,7 @@ import numpy as np
 def impute(dataset):
 	#impute age column with "Unknown"
 	dataset["age"] = pd.to_numeric(dataset['age'],errors='coerce', downcast='signed')
-	dataset['age'].fillna("Unknown", inplace=True)
+	dataset['age'].fillna(-1, inplace=True)
 
 	#impute sex column with "Unknown"
 	dataset['sex'].fillna("Unknown", inplace=True)
@@ -20,8 +20,10 @@ def impute(dataset):
 	dataset['date_confirmation'].fillna("Unknown", inplace=True)
 
 	#impute latitude and longitude columns with "Unknown", and ensure type is float
-	dataset['latitude'].fillna("Unknown", inplace=True)
-	dataset['longitude'].fillna("Unknown", inplace=True)
+	dataset["latitude"] = pd.to_numeric(dataset['latitude'],errors='coerce', downcast='signed')
+	dataset["longtitude"] = pd.to_numeric(dataset['longitude'],errors='coerce', downcast='signed')
+	dataset['latitude'].fillna(-91, inplace=True)
+	dataset['longitude'].fillna(-181, inplace=True)
 	# dataset = dataset.astype({"latitude": float})
 	# dataset = dataset.astype({"longitude": float})
 
