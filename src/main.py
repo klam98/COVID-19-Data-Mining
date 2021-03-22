@@ -52,7 +52,7 @@ def report(model, x, y):
 
 def xgboost_plot(x_train, y_train, x_test, y_test):
 	train_scores, test_scores = list(), list()
-	values = [i for i in range(1, 51)]
+	values = [i for i in range(1, 35)]
 	for i in values:
 	    # configure the model
 	    model = xgboost.XGBClassifier(use_label_encoder = False, max_depth = i, eval_metric="mlogloss")
@@ -69,9 +69,12 @@ def xgboost_plot(x_train, y_train, x_test, y_test):
 	    print(i)
 	# plot of train and test scores vs tree depth
 	plt.plot(values, train_scores, '-o', label='Train')
-	plt.plot(values, test_scores, '-o', label='Test')
-	plt.ylabel("Max Depth")
+	plt.plot(values, test_scores, '-o', label='Validation')
+	plt.title('XGBoost Max Depth Vs Accuracy')
+	plt.xlabel('Max Depth')
+	plt.ylabel('Accuracy')
 	plt.legend()
+	plt.savefig('plots/xgboost_max_depth.pdf')
 	plt.show()
 
 def randomforests_plot(x_train, y_train, x_test, y_test):
@@ -95,9 +98,12 @@ def randomforests_plot(x_train, y_train, x_test, y_test):
 		print('>%d, train: %.3f, test: %.3f' % (i, train_acc, test_acc))
 
 	plt.plot(values, train_scores, '-o', label='Train')
-	plt.plot(values, test_scores, '-o', label='Test')
+	plt.plot(values, test_scores, '-o', label='Validation')
+	plt.title('Random Forests Max Depth Vs Accuracy')
+	plt.xlabel('Max Depth')
+	plt.ylabel('Accuracy')
 	plt.legend()
-	plt.savefig('plots/rf_tuning_max_depth.pdf')
+	plt.savefig('plots/rf_max_depth.pdf')
 	plt.show()
 
 # xgboost_plot(x_train, y_train, x_test, y_test)
