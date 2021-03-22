@@ -74,9 +74,36 @@ def xgboost_plot(x_train, y_train, x_test, y_test):
 	plt.legend()
 	plt.show()
 
-# xgboost_plot(x_train, y_train, x_test, y_test)
+def randomforests_plot(x_train, y_train, x_test, y_test):
+	train_scores, test_scores = list(), list()
+	values = [i for i in range(1, 30)]
+	for i in values:
+		model = RandomForestClassifier(max_depth=i)
+		model.fit(x_train, y_train.values.ravel())
 
-xgboost_model(x_train, y_train)
+		# evaluate on the train dataset
+		train_y_predict = model.predict(x_train)
+		train_acc = accuracy_score(y_train, train_y_predict)
+		train_scores.append(train_acc)
+
+		# evaluate on the test dataset
+		test_y_predict = model.predict(x_test)
+		test_acc = accuracy_score(y_test, test_y_predict)
+		test_scores.append(test_acc)
+
+		# summarize progress
+		print('>%d, train: %.3f, test: %.3f' % (i, train_acc, test_acc))
+
+	plt.plot(values, train_scores, '-o', label='Train')
+	plt.plot(values, test_scores, '-o', label='Test')
+	plt.legend()
+	plt.savefig('plots/rf_tuning_max_depth.pdf')
+	plt.show()
+
+# xgboost_plot(x_train, y_train, x_test, y_test)
+# randomforests_plot(x_train, y_train, x_test, y_test)
+
+# xgboost_model(x_train, y_train)
 # knn_model(x_train, y_train)
 # randomforests_model(x_train, y_train)
 
