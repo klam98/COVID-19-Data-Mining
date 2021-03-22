@@ -19,7 +19,7 @@ y = data.iloc[:, data.columns == "outcome"] #output
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, random_state = 0, shuffle = False, stratify = None)
 
 def xgboost_model(x_train, y_train):
-	model = xgboost.XGBClassifier()
+	model = xgboost.XGBClassifier(use_label_encoder = False, eval_metric="mlogloss") #default is max_depth = 6
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/xgb_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
@@ -50,22 +50,48 @@ def report(model, x, y):
 	report = classification_report(y, y_predict, target_names=target_names, digits=4)
 	return report
 
-# xgboost_model(x_train, y_train)
+def xgboost_plot(x_train, y_train, x_test, y_test):
+	train_scores, test_scores = list(), list()
+	values = [i for i in range(1, 51)]
+	for i in values:
+	    # configure the model
+	    model = xgboost.XGBClassifier(use_label_encoder = False, max_depth = i, eval_metric="mlogloss")
+	    # fit model on the training dataset
+	    model.fit(x_train, y_train)
+	    # evaluate on the train dataset
+	    train_y_predict = model.predict(x_train)
+	    train_acc = accuracy_score(y_train, train_y_predict)
+	    train_scores.append(train_acc)
+	    # evaluate on the test dataset
+	    test_y_predict = model.predict(x_test)
+	    test_acc = accuracy_score(y_test, test_y_predict)
+	    test_scores.append(test_acc)
+	    print(i)
+	# plot of train and test scores vs tree depth
+	plt.plot(values, train_scores, '-o', label='Train')
+	plt.plot(values, test_scores, '-o', label='Test')
+	plt.ylabel("Max Depth")
+	plt.legend()
+	plt.show()
+
+# xgboost_plot(x_train, y_train, x_test, y_test)
+
+xgboost_model(x_train, y_train)
 # knn_model(x_train, y_train)
 # randomforests_model(x_train, y_train)
 
-loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
-loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
-loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
+# loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
+# loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
+# loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
-print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
+# print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
 
 # print("K-Nearest Neighbours Training Accuracy: ", accuracy(loaded_knn, x_train, y_train))
 # print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
-print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
+# print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
 
 # print("Random Forests Training Accuracy: ", accuracy(loaded_rf, x_train, y_train))
 # print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
-print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
+# print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
