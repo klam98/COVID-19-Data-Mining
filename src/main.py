@@ -1,9 +1,9 @@
 import numpy as np 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import LabelEncoder
-
+import matplotlib.pyplot as plt  
 import xgboost
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import neighbors
@@ -44,6 +44,12 @@ def accuracy(model, x, y):
 	accuracy = accuracy_score(y, y_predict)
 	return accuracy
 
+def report(model, x, y):
+	y_predict = model.predict(x)
+	target_names = ['recovered', 'hospitalized', 'nonhospitalized', 'deceased']
+	report = classification_report(y, y_predict, target_names=target_names, digits=4)
+	return report
+
 # xgboost_model(x_train, y_train)
 # knn_model(x_train, y_train)
 # randomforests_model(x_train, y_train)
@@ -52,10 +58,14 @@ loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
 loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
 loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
-print("XGBoost Training  Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
-print("K-Nearest Neighbours Training  Accuracy: ", accuracy(loaded_knn, x_train, y_train))
-print("Random Forests Training  Accuracy: ", accuracy(loaded_rf, x_train, y_train))
+# print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
+# print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
+print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
 
-print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
-print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
-print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
+# print("K-Nearest Neighbours Training Accuracy: ", accuracy(loaded_knn, x_train, y_train))
+# print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
+print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
+
+# print("Random Forests Training Accuracy: ", accuracy(loaded_rf, x_train, y_train))
+# print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
+print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
