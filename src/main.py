@@ -135,13 +135,17 @@ def randomforests_plot(x_train, y_train, x_test, y_test):
 	plt.savefig('plots/rf_max_depth.pdf')
 	# plt.show()
 	
-xgboost_plot(x_train, y_train, x_test, y_test)
-knn_plot(x_train, y_train, x_test, y_test)
-randomforests_plot(x_train, y_train, x_test, y_test)
+saved_xgboost = xgboost_model(x_train, y_train)
+saved_knn = knn_model(x_train, y_train)
+saved_rf = randomforests_model(x_train, y_train)
 
 loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
 loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
 loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
+
+xgboost_plot(x_train, y_train, x_test, y_test)
+knn_plot(x_train, y_train, x_test, y_test)
+randomforests_plot(x_train, y_train, x_test, y_test)
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
