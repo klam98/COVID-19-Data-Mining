@@ -75,11 +75,11 @@ def xgboost_plot(x_train, y_train, x_test, y_test):
 	plt.ylabel('Accuracy')
 	plt.legend()
 	plt.savefig('plots/xgboost_max_depth.pdf')
-	# plt.show()
+	plt.clf()
 
 def knn_plot(x_train, y_train, x_test, y_test):
 	train_scores, test_scores = list(), list()
-	values = [i*5 for i in range(1, 19)]
+	values = [i*5 for i in range(1, 14)]
 	for i in values:
 		model = neighbors.KNeighborsClassifier(i, weights='distance')
 		model.fit(x_train, y_train.values.ravel())
@@ -104,7 +104,7 @@ def knn_plot(x_train, y_train, x_test, y_test):
 	plt.ylabel('Accuracy')
 	plt.legend()
 	plt.savefig('plots/knn_max_neighbors.pdf')
-	# plt.show()
+	plt.clf()
 
 def randomforests_plot(x_train, y_train, x_test, y_test):
 	train_scores, test_scores = list(), list()
@@ -133,7 +133,7 @@ def randomforests_plot(x_train, y_train, x_test, y_test):
 	plt.ylabel('Accuracy')
 	plt.legend()
 	plt.savefig('plots/rf_max_depth.pdf')
-	# plt.show()
+	plt.clf()
 	
 saved_xgboost = xgboost_model(x_train, y_train)
 saved_knn = knn_model(x_train, y_train)

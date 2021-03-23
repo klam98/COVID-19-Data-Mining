@@ -3,7 +3,7 @@
 <!-- Milestone 2 -->
 ### Notes:
 ### -execute main.py to generate a .pkl model, a plot, and a report for each classification algorithm
-### -main.py may take roughly 30-45 minutes to complete execution. 
+### -main.py may take roughly an hour to finish
 
 <!-- Milestone 1
 ### Notes: ###
