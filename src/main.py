@@ -75,7 +75,7 @@ def xgboost_plot(x_train, y_train, x_test, y_test):
 	plt.ylabel('Accuracy')
 	plt.legend()
 	plt.savefig('plots/xgboost_max_depth.pdf')
-	plt.show()
+	# plt.show()
 
 def knn_plot(x_train, y_train, x_test, y_test):
 	train_scores, test_scores = list(), list()
@@ -104,7 +104,7 @@ def knn_plot(x_train, y_train, x_test, y_test):
 	plt.ylabel('Accuracy')
 	plt.legend()
 	plt.savefig('plots/knn_max_neighbors.pdf')
-	plt.show()
+	# plt.show()
 
 def randomforests_plot(x_train, y_train, x_test, y_test):
 	train_scores, test_scores = list(), list()
@@ -133,28 +133,24 @@ def randomforests_plot(x_train, y_train, x_test, y_test):
 	plt.ylabel('Accuracy')
 	plt.legend()
 	plt.savefig('plots/rf_max_depth.pdf')
-	plt.show()
+	# plt.show()
 	
-# xgboost_plot(x_train, y_train, x_test, y_test)
+xgboost_plot(x_train, y_train, x_test, y_test)
 knn_plot(x_train, y_train, x_test, y_test)
-# randomforests_plot(x_train, y_train, x_test, y_test)
+randomforests_plot(x_train, y_train, x_test, y_test)
 
-# xgboost_model(x_train, y_train)
-# knn_model(x_train, y_train)
-# randomforests_model(x_train, y_train)
-
-# loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
-# loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
-# loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
+loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
+loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
+loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
-# print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
+print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
 
 # print("K-Nearest Neighbours Training Accuracy: ", accuracy(loaded_knn, x_train, y_train))
 # print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
-# print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
+print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
 
 # print("Random Forests Training Accuracy: ", accuracy(loaded_rf, x_train, y_train))
 # print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
-# print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
+print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
