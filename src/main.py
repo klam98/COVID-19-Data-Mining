@@ -49,6 +49,91 @@ def report(model, x, y):
 	target_names = ['recovered', 'hospitalized', 'nonhospitalized', 'deceased']
 	report = classification_report(y, y_predict, target_names=target_names, digits=4)
 	return report
+
+def xgboost_plot(x_train, y_train, x_test, y_test):
+	train_scores, test_scores = list(), list()
+	values = [i for i in range(1, 35)]
+	for i in values:
+	    # configure the model
+	    model = xgboost.XGBClassifier(use_label_encoder = False, max_depth = i, eval_metric="mlogloss")
+	    # fit model on the training dataset
+	    model.fit(x_train, y_train)
+	    # evaluate on the train dataset
+	    train_y_predict = model.predict(x_train)
+	    train_acc = accuracy_score(y_train, train_y_predict)
+	    train_scores.append(train_acc)
+	    # evaluate on the test dataset
+	    test_y_predict = model.predict(x_test)
+	    test_acc = accuracy_score(y_test, test_y_predict)
+	    test_scores.append(test_acc)
+	    print(i)
+	# plot of train and test scores vs tree depth
+	plt.plot(values, train_scores, '-o', label='Train')
+	plt.plot(values, test_scores, '-o', label='Validation')
+	plt.title('XGBoost Max Depth Vs Accuracy')
+	plt.xlabel('Max Depth')
+	plt.ylabel('Accuracy')
+	plt.legend()
+	plt.savefig('plots/xgboost_max_depth.pdf')
+	plt.clf()
+
+def knn_plot(x_train, y_train, x_test, y_test):
+	train_scores, test_scores = list(), list()
+	values = [i*5 for i in range(1, 14)]
+	for i in values:
+		model = neighbors.KNeighborsClassifier(i, weights='distance')
+		model.fit(x_train, y_train.values.ravel())
+
+		# evaluate on the train dataset
+		train_y_predict = model.predict(x_train)
+		train_acc = accuracy_score(y_train, train_y_predict)
+		train_scores.append(train_acc)
+
+		# evaluate on the test dataset
+		test_y_predict = model.predict(x_test)
+		test_acc = accuracy_score(y_test, test_y_predict)
+		test_scores.append(test_acc)
+
+		# summarize progress
+		print('>%d, train: %.3f, test: %.3f' % (i, train_acc, test_acc))
+
+	plt.plot(values, train_scores, '-o', label='Train')
+	plt.plot(values, test_scores, '-o', label='Validation')
+	plt.title('K-Nearest Neighbors (# of Neighbors Vs Accuracy)')
+	plt.xlabel('# of Neighbors')
+	plt.ylabel('Accuracy')
+	plt.legend()
+	plt.savefig('plots/knn_max_neighbors.pdf')
+	plt.clf()
+
+def randomforests_plot(x_train, y_train, x_test, y_test):
+	train_scores, test_scores = list(), list()
+	values = [i for i in range(1, 30)]
+	for i in values:
+		model = RandomForestClassifier(max_depth=i)
+		model.fit(x_train, y_train.values.ravel())
+
+		# evaluate on the train dataset
+		train_y_predict = model.predict(x_train)
+		train_acc = accuracy_score(y_train, train_y_predict)
+		train_scores.append(train_acc)
+
+		# evaluate on the test dataset
+		test_y_predict = model.predict(x_test)
+		test_acc = accuracy_score(y_test, test_y_predict)
+		test_scores.append(test_acc)
+
+		# summarize progress
+		print('>%d, train: %.3f, test: %.3f' % (i, train_acc, test_acc))
+
+	plt.plot(values, train_scores, '-o', label='Train')
+	plt.plot(values, test_scores, '-o', label='Validation')
+	plt.title('Random Forests Max Depth Vs Accuracy')
+	plt.xlabel('Max Depth')
+	plt.ylabel('Accuracy')
+	plt.legend()
+	plt.savefig('plots/rf_max_depth.pdf')
+	plt.clf()
 	
 saved_xgboost = xgboost_model(x_train, y_train)
 saved_knn = knn_model(x_train, y_train)
