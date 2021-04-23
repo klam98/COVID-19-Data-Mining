@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV
+from sklearn.metrics import accuracy_score, classification_report, make_scorer
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt  
 import xgboost
@@ -49,10 +49,17 @@ def report(model, x, y):
 	target_names = ['recovered', 'hospitalized', 'nonhospitalized', 'deceased']
 	report = classification_report(y, y_predict, target_names=target_names, digits=4)
 	return report
-	
-saved_xgboost = xgboost_model(x_train, y_train)
-saved_knn = knn_model(x_train, y_train)
-saved_rf = randomforests_model(x_train, y_train)
+
+def cross_validation(model, x, y):
+	scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score)}
+	gs = GridSearchCV(model, param_grid={'min_samples_split': range(2, 403, 10)},
+                  scoring=scoring, refit='AUC', return_train_score=True)
+	gs.fit(x, y)
+	return gs.cv_results_
+
+# saved_xgboost = xgboost_model(x_train, y_train)
+# saved_knn = knn_model(x_train, y_train)
+# saved_rf = randomforests_model(x_train, y_train)
 
 loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
 loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
@@ -60,12 +67,16 @@ loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
-print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
+# print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
 
 # print("K-Nearest Neighbours Training Accuracy: ", accuracy(loaded_knn, x_train, y_train))
 # print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
-print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
+# print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
 
 # print("Random Forests Training Accuracy: ", accuracy(loaded_rf, x_train, y_train))
 # print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
-print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
+# print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
+
+print(cross_validation(loaded_xgboost, x_train, y_train))
+# print(cross_validation(loaded_knn, x_train, y_train))
+# print(cross_validation(loaded_rf, x_train, y_train))
