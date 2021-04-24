@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd
 from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV
-from sklearn.metrics import accuracy_score, classification_report, make_scorer
+from sklearn.metrics import accuracy_score, classification_report, make_scorer, plot_confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt  
 import xgboost
@@ -46,9 +46,16 @@ def accuracy(model, x, y):
 
 def report(model, x, y):
 	y_predict = model.predict(x)
-	target_names = ['recovered', 'hospitalized', 'nonhospitalized', 'deceased']
-	report = classification_report(y, y_predict, target_names=target_names, digits=4)
+	outcomes = ['recovered', 'hospitalized', 'nonhospitalized', 'deceased']
+	report = classification_report(y, y_predict, target_names=outcomes, digits=4)
 	return report
+
+def confusion_matrix_plot(model, x, y, title):
+	outcomes = ['recovered', 'hospitalized', 'nonhospitalized', 'deceased']
+	matrix = plot_confusion_matrix(model, x, y, display_labels=outcomes, xticks_rotation=15)
+	matrix.ax_.set_title(title)
+	plt.tight_layout()
+	plt.show()
 
 def cross_validation(model, x, y):
 	scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score)}
@@ -67,16 +74,22 @@ loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
+# print("XGBoost Training Classification Report:\n", report(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
+# confusion_matrix_plot(loaded_xgboost, x_test, y_test, 'XGBoost Confusion Matrix')
 
 # print("K-Nearest Neighbours Training Accuracy: ", accuracy(loaded_knn, x_train, y_train))
 # print("K-Nearest Neighbours Validation Accuracy: ", accuracy(loaded_knn, x_test, y_test))
+# print("K-Nearest Neighbours Training Classification Report:\n", report(loaded_knn, x_train, y_train))
 # print("K-Nearest Neighbours Validation Classification Report:\n", report(loaded_knn, x_test, y_test))
+# confusion_matrix_plot(loaded_rf, x_test, y_test, 'Random Forests Confusion Matrix')
 
 # print("Random Forests Training Accuracy: ", accuracy(loaded_rf, x_train, y_train))
 # print("Random Forests Validation Accuracy: ", accuracy(loaded_rf, x_test, y_test))
+# print("Random Forests Training Classification Report:\n", report(loaded_rf, x_train, y_train))
 # print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
+# confusion_matrix_plot(loaded_knn, x_test, y_test, 'K-Nearest Neighbours Confusion Matrix')
 
-print(cross_validation(loaded_xgboost, x_train, y_train))
+# print(cross_validation(loaded_xgboost, x_train, y_train))
 # print(cross_validation(loaded_knn, x_train, y_train))
 # print(cross_validation(loaded_rf, x_train, y_train))
