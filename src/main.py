@@ -26,14 +26,14 @@ def xgboost_model(x_train, y_train):
 	return model
 
 def knn_model(x_train, y_train):
-	model = neighbors.KNeighborsClassifier(100, weights='distance')
+	model = neighbors.KNeighborsClassifier(80, weights='distance', p=1, n_jobs=-1)
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/knn_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 	return model
 
 def randomforests_model(x_train, y_train):
-	model = RandomForestClassifier(n_estimators=25)
+	model = RandomForestClassifier(n_estimators=100, max_features=0.9, max_depth=28, min_samples_leaf=1, n_jobs=-1)
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/rf_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
@@ -122,10 +122,13 @@ def cross_validation(model, x, y):
 	# plt.show()
 
 saved_xgboost = xgboost_model(x_train, y_train)
-print("XGBoost Validation Classification Report:\n", report(saved_xgboost, x_test, y_test))
+print("XGBoost Tuned Validation Classification Report:\n", report(saved_xgboost, x_test, y_test))
 
-# saved_knn = knn_model(x_train, y_train)
-# saved_rf = randomforests_model(x_train, y_train)
+saved_knn = knn_model(x_train, y_train)
+print("K-Nearest Neighbours Tuned Validation Classification Report:\n", report(saved_knn, x_test, y_test))
+
+saved_rf = randomforests_model(x_train, y_train)
+print("Random Forests Tuned Validation Classification Report:\n", report(saved_rf, x_test, y_test))
 
 # loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
 # loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
@@ -150,5 +153,5 @@ print("XGBoost Validation Classification Report:\n", report(saved_xgboost, x_tes
 # confusion_matrix_plot(loaded_knn, x_test, y_test, 'K-Nearest Neighbours Confusion Matrix')
 
 # cross_validation(loaded_xgboost, x_train, y_train)
-# print(cross_validation(loaded_knn, x_train, y_train))
-# print(cross_validation(loaded_rf, x_train, y_train))
+# cross_validation(loaded_knn, x_train, y_train)
+# cross_validation(loaded_rf, x_train, y_train)
