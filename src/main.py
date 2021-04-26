@@ -10,12 +10,16 @@ from sklearn import neighbors
 import pickle
 
 data = pd.read_csv("data/cases_train_processed.csv")
+test_data = pd.read_csv("data/cases_test_processed.csv")
 
 encoder = LabelEncoder()
+
 data = data.apply(encoder.fit_transform)
+test_data = test_data.apply(encoder.fit_transform)
 
 x = data.iloc[:, data.columns != "outcome"] #input
 y = data.iloc[:, data.columns == "outcome"] #output
+
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, random_state = 0, shuffle = False, stratify = None)
 
 def xgboost_model(x_train, y_train):
@@ -59,12 +63,12 @@ def confusion_matrix_plot(model, x, y, title):
 
 def cross_validation(model, x, y):
 	scoring = {
-		# labels=[0] is 'recovered'
+		# labels=[0] is 'deceased'
         # labels=[1] is 'hospitalized'
         # labels=[2] is 'nonhospitalized'
-        # labels=[3] is 'deceased'
-		'F1-Score on deceased': make_scorer(f1_score, labels=[3], average=None),
-		'Recall on deceased': make_scorer(recall_score, labels=[3], average=None),
+        # labels=[3] is 'recovered'
+		'F1-Score on deceased': make_scorer(f1_score, labels=[0], average=None),
+		'Recall on deceased': make_scorer(recall_score, labels=[0], average=None),
 		'Overall Accuracy': make_scorer(accuracy_score),
 		'Overall Recall': make_scorer(recall_score, average='weighted')
 	}
@@ -78,8 +82,6 @@ def cross_validation(model, x, y):
 	print(gs.best_params_)
 	print()
 	print(gs.best_estimator_)
-
-	# print(results)
 
 	# plt.figure(figsize=(13, 13))
 	# plt.title("GridSearchCV evaluating using multiple scorers simultaneously",
@@ -121,18 +123,43 @@ def cross_validation(model, x, y):
 	# plt.grid(False)
 	# plt.show()
 
-saved_xgboost = xgboost_model(x_train, y_train)
-print("XGBoost Tuned Validation Classification Report:\n", report(saved_xgboost, x_test, y_test))
+def predict_test_set(dataset, model):
+	input = dataset.iloc[:, dataset.columns != "outcome"]
+	results = model.predict(input) # int64 array
+	results = results.astype(str)
+	results = np.where(results == '0', 'deceased', results)
+	results = np.where(results == '1', 'hospitalized', results)
+	results = np.where(results == '2', 'nonhospitalized', results)
+	results = np.where(results == '3', 'recovered', results)
 
-saved_knn = knn_model(x_train, y_train)
-print("K-Nearest Neighbours Tuned Validation Classification Report:\n", report(saved_knn, x_test, y_test))
+	np.savetxt('results/predictions.txt', results, fmt='%s')
 
-saved_rf = randomforests_model(x_train, y_train)
-print("Random Forests Tuned Validation Classification Report:\n", report(saved_rf, x_test, y_test))
+	filename = "results/predictions.txt"
+	with open(filename) as f_input:
+		data = f_input.read().rstrip('\n')
+	with open(filename, 'w') as f_output:    
+		f_output.write(data)
 
-# loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
-# loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
-# loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
+def check_if_file_valid(filename):
+	assert filename.endswith('predictions.txt'), 'Incorrect filename'
+	f = open(filename).read()
+	l = f.split('\n')
+	assert len(l) == 46500, 'Incorrect number of items'
+	assert (len(set(l)) == 4), 'Wrong class labels'
+	return 'The predictions file is valid'
+
+# saved_xgboost = xgboost_model(x_train, y_train)
+# print("XGBoost Tuned Validation Classification Report:\n", report(saved_xgboost, x_test, y_test))
+
+# saved_knn = knn_model(x_train, y_train)
+# print("K-Nearest Neighbours Tuned Validation Classification Report:\n", report(saved_knn, x_test, y_test))
+
+# saved_rf = randomforests_model(x_train, y_train)
+# print("Random Forests Tuned Validation Classification Report:\n", report(saved_rf, x_test, y_test))
+
+loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
+loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
+loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
@@ -155,3 +182,6 @@ print("Random Forests Tuned Validation Classification Report:\n", report(saved_r
 # cross_validation(loaded_xgboost, x_train, y_train)
 # cross_validation(loaded_knn, x_train, y_train)
 # cross_validation(loaded_rf, x_train, y_train)
+
+# predict_test_set(test_data, loaded_xgboost)
+# check_if_file_valid('results/predictions.txt')
