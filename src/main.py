@@ -11,7 +11,6 @@ import pickle
 
 data = pd.read_csv("data/cases_train_processed.csv")
 test_data = pd.read_csv("data/cases_test_processed.csv")
-
 encoder = LabelEncoder()
 
 data = data.apply(encoder.fit_transform)
@@ -30,14 +29,14 @@ def xgboost_model(x_train, y_train):
 	return model
 
 def knn_model(x_train, y_train):
-	model = neighbors.KNeighborsClassifier(80, weights='distance', p=1, n_jobs=-1)
+	model = neighbors.KNeighborsClassifier(weights='distance')
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/knn_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 	return model
 
-def randomforests_model(x_train, y_train):
-	model = RandomForestClassifier(n_estimators=100, max_features=0.9, max_depth=28, min_samples_leaf=1, n_jobs=-1)
+def randomforests_model(x_train, y_train): # default n_estimators = 100
+	model = RandomForestClassifier()
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/rf_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
@@ -72,7 +71,7 @@ def cross_validation(model, x, y):
 		'Overall Accuracy': make_scorer(accuracy_score),
 		'Overall Recall': make_scorer(recall_score, average='weighted')
 	}
-	gs = GridSearchCV(model, param_grid={'max_depth': range(10, 20, 2), 'learning_rate': np.arange(0.1, 1, 0.1), 'n_estimators': range(50, 150, 10)},
+	gs = GridSearchCV(model, param_grid={'min_samples_leaf': range(1, 5, 1), 'max_features': np.arange(0.1, 1, 0.1), 'max_depth': range(5, 30, 5)},
                   scoring=scoring, refit='F1-Score on deceased', return_train_score=True, n_jobs=-1) #default is max_depth = 3, learning_rate = 0.1 for XGBoost, n_estimators = 100
 	gs.fit(x, y)
 	results = gs.cv_results_
@@ -156,9 +155,9 @@ def check_if_file_valid(filename):
 # saved_rf = randomforests_model(x_train, y_train)
 # print("Random Forests Tuned Validation Classification Report:\n", report(saved_rf, x_test, y_test))
 
-# loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
-# loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
-# loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
+loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
+loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
+loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Classification Report:\n", report(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Classification Report:\n", report(loaded_xgboost, x_test, y_test))
