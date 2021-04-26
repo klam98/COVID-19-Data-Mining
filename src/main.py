@@ -29,14 +29,14 @@ def xgboost_model(x_train, y_train):
 	return model
 
 def knn_model(x_train, y_train):
-	model = neighbors.KNeighborsClassifier(weights='distance')
+	model = neighbors.KNeighborsClassifier(60, weights='distance', p=1)
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/knn_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
 	return model
 
 def randomforests_model(x_train, y_train): # default n_estimators = 100
-	model = RandomForestClassifier()
+	model = RandomForestClassifier(max_depth=25, max_features=0.9, min_samples_leaf=1)
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/rf_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
@@ -71,7 +71,7 @@ def cross_validation(model, x, y):
 		'Overall Accuracy': make_scorer(accuracy_score),
 		'Overall Recall': make_scorer(recall_score, average='weighted')
 	}
-	gs = GridSearchCV(model, param_grid={'min_samples_leaf': range(1, 5, 1), 'max_features': np.arange(0.1, 1, 0.1), 'max_depth': range(5, 30, 5)},
+	gs = GridSearchCV(model, param_grid={'max_depth': range(5, 10)},
                   scoring=scoring, refit='F1-Score on deceased', return_train_score=True, n_jobs=-1) #default is max_depth = 3, learning_rate = 0.1 for XGBoost, n_estimators = 100
 	gs.fit(x, y)
 	results = gs.cv_results_
