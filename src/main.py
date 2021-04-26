@@ -19,7 +19,7 @@ y = data.iloc[:, data.columns == "outcome"] #output
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, random_state = 0, shuffle = False, stratify = None)
 
 def xgboost_model(x_train, y_train):
-	model = xgboost.XGBClassifier(use_label_encoder = False, eval_metric="mlogloss") #default is max_depth = 6
+	model = xgboost.XGBClassifier(use_label_encoder = False, eval_metric="mlogloss", n_jobs = -1, max_depth = 18, learning_rate = 0.5, n_estimators = 100) #default is max_depth = 6
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/xgb_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
@@ -68,8 +68,9 @@ def cross_validation(model, x, y):
 		'Overall Accuracy': make_scorer(accuracy_score),
 		'Overall Recall': make_scorer(recall_score, average='weighted')
 	}
-	gs = GridSearchCV(model, param_grid={'max_depth': range(2, 10, 2), 'learning_rate': np.arange(0.1, 0.5, 0.1)},
+	gs = GridSearchCV(model, param_grid={'max_depth': [18], 'learning_rate': [0.5], 'n_estimators': range(50, 150, 10)},
 				  scoring=scoring, refit='F1-Score on deceased', return_train_score=True, n_jobs=-1)
+	#default is max_depth = 3, learning_rate = 0.1 for XGBoost
 	gs.fit(x, y)
 	results = gs.cv_results_
 	print(results)
@@ -120,13 +121,15 @@ def cross_validation(model, x, y):
 	# plt.grid(False)
 	# plt.show()
 
-# saved_xgboost = xgboost_model(x_train, y_train)
+saved_xgboost = xgboost_model(x_train, y_train)
+print("XGBoost Validation Classification Report:\n", report(saved_xgboost, x_test, y_test))
+
 # saved_knn = knn_model(x_train, y_train)
 # saved_rf = randomforests_model(x_train, y_train)
 
-loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
-loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
-loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
+# loaded_xgboost = pickle.load(open("models/xgb_classifier.pkl", "rb"))
+# loaded_knn = pickle.load(open("models/knn_classifier.pkl", "rb"))
+# loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 
 # print("XGBoost Training Accuracy: ", accuracy(loaded_xgboost, x_train, y_train))
 # print("XGBoost Validation Accuracy: ", accuracy(loaded_xgboost, x_test, y_test))
@@ -146,6 +149,6 @@ loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 # print("Random Forests Validation Classification Report:\n", report(loaded_rf, x_test, y_test))
 # confusion_matrix_plot(loaded_knn, x_test, y_test, 'K-Nearest Neighbours Confusion Matrix')
 
-cross_validation(loaded_xgboost, x_train, y_train)
+# cross_validation(loaded_xgboost, x_train, y_train)
 # print(cross_validation(loaded_knn, x_train, y_train))
 # print(cross_validation(loaded_rf, x_train, y_train))
