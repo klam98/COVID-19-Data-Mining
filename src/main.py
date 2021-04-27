@@ -8,6 +8,7 @@ import xgboost
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import neighbors
 import pickle
+import time
 
 data = pd.read_csv("data/cases_train_processed.csv")
 test_data = pd.read_csv("data/cases_test_processed.csv")
@@ -22,7 +23,7 @@ y = data.iloc[:, data.columns == "outcome"] #output
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.8, random_state = 0, shuffle = False, stratify = None)
 
 def xgboost_model(x_train, y_train):
-	model = xgboost.XGBClassifier(use_label_encoder = False, eval_metric="mlogloss")
+	model = xgboost.XGBClassifier(use_label_encoder = False, eval_metric="mlogloss", learning_rate=0.55, max_depth=19, n_estimators=105)
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/xgb_classifier.pkl", "wb") as file:
 		pickle.dump(model, file)
@@ -35,7 +36,7 @@ def knn_model(x_train, y_train):
 		pickle.dump(model, file)
 	return model
 
-def randomforests_model(x_train, y_train): # default n_estimators = 100
+def randomforests_model(x_train, y_train):
 	model = RandomForestClassifier(max_depth=25, max_features=0.9, min_samples_leaf=1)
 	model.fit(x_train, y_train.values.ravel())
 	with open("models/rf_classifier.pkl", "wb") as file:
@@ -175,5 +176,5 @@ loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 # cross_validation(loaded_knn, x_train, y_train)
 # cross_validation(loaded_rf, x_train, y_train)
 
-# predict_test_set(test_data, loaded_xgboost)
-# check_if_file_valid('results/predictions.txt')
+predict_test_set(test_data, loaded_xgboost)
+check_if_file_valid('results/predictions.txt')
