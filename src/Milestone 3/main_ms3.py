@@ -131,9 +131,9 @@ def predict_test_set(dataset, model):
 	results = np.where(results == '2', 'nonhospitalized', results)
 	results = np.where(results == '3', 'recovered', results)
 
-	np.savetxt('results/predictions.txt', results, fmt='%s')
+	np.savetxt('results/Milestone 3/predictions.txt', results, fmt='%s')
 
-	filename = "results/predictions.txt"
+	filename = 'results/Milestone 3/predictions.txt'
 	with open(filename) as f_input:
 		data = f_input.read().rstrip('\n')
 	with open(filename, 'w') as f_output:    
@@ -177,4 +177,4 @@ loaded_rf = pickle.load(open("models/rf_classifier.pkl", "rb"))
 # cross_validation(loaded_rf, x_train, y_train)
 
 predict_test_set(test_data, loaded_xgboost)
-check_if_file_valid('results/predictions.txt')
+check_if_file_valid('results/Milestone 3/predictions.txt')
